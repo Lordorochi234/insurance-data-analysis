@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mark Anthony — Kenya Insurance Claims Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Literata:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink:       #0d1117;
+    --paper:     #f5f0e8;
+    --cream:     #ede8db;
+    --gold:      #c8922a;
+    --gold-lt:   #e8b84b;
+    --red:       #b83232;
+    --teal:      #1a5c5c;
+    --teal-lt:   #2a8080;
+    --rule:      rgba(13,17,23,0.12);
+    --rule-dark: rgba(13,17,23,0.25);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Literata', Georgia, serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  section, header, footer { position: relative; z-index: 1; }
+
+  /* ── MASTHEAD ── */
+  header {
+    border-bottom: 3px double var(--rule-dark);
+    padding: 0;
+    background: var(--ink);
+    color: var(--paper);
+    overflow: hidden;
+  }
+
+  .masthead-rule {
+    height: 4px;
+    background: repeating-linear-gradient(90deg, var(--gold) 0, var(--gold) 8px, transparent 8px, transparent 12px);
+  }
+
+  .masthead-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 32px 40px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: end;
+  }
+
+  .masthead-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .masthead-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .masthead-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--paper);
+  }
+  .masthead-title em {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .masthead-sub {
+    margin-top: 18px;
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(245,240,232,0.65);
+    max-width: 520px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .masthead-meta {
+    text-align: right;
+  }
+  .masthead-badge {
+    display: inline-block;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    margin-bottom: 10px;
+  }
+  .masthead-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(245,240,232,0.4);
+    letter-spacing: 0.1em;
+  }
+
+  .masthead-contact {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    text-align: right;
+  }
+  .masthead-contact a,
+  .masthead-contact span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(245,240,232,0.55);
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .masthead-contact a:hover { color: var(--gold); }
+
+  /* ── NAV RIBBON ── */
+  nav {
+    background: var(--cream);
+    border-bottom: 1px solid var(--rule-dark);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    gap: 0;
+  }
+  nav a {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 14px 20px;
+    border-right: 1px solid var(--rule);
+    transition: background 0.2s, color 0.2s;
+  }
+  nav a:first-child { border-left: 1px solid var(--rule); }
+  nav a:hover { background: var(--ink); color: var(--gold); }
+
+  /* ── MAIN CONTAINER ── */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ── SECTION HEADINGS ── */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 56px 0 28px;
+    border-bottom: 1px solid var(--rule-dark);
+    margin-bottom: 40px;
+  }
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+  }
+  .section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  /* ── OVERVIEW SECTION ── */
+  #overview {
+    padding-bottom: 60px;
+    border-bottom: 3px double var(--rule-dark);
+  }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .overview-body p {
+    font-size: 16px;
+    line-height: 1.85;
+    color: rgba(13,17,23,0.8);
+    margin-bottom: 18px;
+  }
+
+  .overview-body p strong {
+    color: var(--ink);
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .stat-panel {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--teal));
+  }
+
+  .stat-item {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(245,240,232,0.1);
+  }
+  .stat-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .stat-item:first-child { padding-top: 0; }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--paper);
+    line-height: 1;
+  }
+  .stat-sub {
+    font-size: 11px;
+    color: rgba(245,240,232,0.45);
+    margin-top: 4px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── CHARTS SECTION ── */
+  #charts { padding-bottom: 60px; border-bottom: 3px double var(--rule-dark); }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  .chart-card {
+    background: white;
+    border: 1px solid var(--rule);
+    padding: 28px;
+    position: relative;
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .chart-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(13,17,23,0.1);
+  }
+  .chart-card.wide {
+    grid-column: 1 / -1;
+  }
+  .chart-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .chart-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--ink);
+  }
+
+  canvas { width: 100% !important; display: block; }
+
+  /* ── BAR CHART (CSS) ── */
+  .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row { display: flex; align-items: center; gap: 12px; }
+  .bar-row-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(13,17,23,0.6);
+    width: 150px;
+    flex-shrink: 0;
+    text-align: right;
+    letter-spacing: -0.01em;
+  }
+  .bar-track {
+    flex: 1;
+    background: var(--cream);
+    height: 26px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--teal);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .bar-fill.gold { background: var(--gold); }
+  .bar-fill.red  { background: var(--red);  }
+  .bar-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: white;
+    font-weight: 500;
+  }
+
+  /* ── DONUT ── */
+  .donut-wrap {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .donut-svg { flex-shrink: 0; }
+  .donut-legend { flex: 1; }
+  .donut-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .donut-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .donut-legend-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(13,17,23,0.7);
+    letter-spacing: 0.02em;
+  }
+  .donut-legend-pct {
+    margin-left: auto;
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  /* ── TREND LINE (SVG) ── */
+  .trend-svg { width: 100%; overflow: visible; }
+  .trend-svg text {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    fill: rgba(13,17,23,0.5);
+  }
+
+  /* ── DATA TABLES ── */
+  #tables { padding-bottom: 60px; border-bottom: 3px double var(--rule-dark); }
+
+  .tab-switcher {
+    display: flex;
+    gap: 0;
+    margin-bottom: 32px;
+    border: 1px solid var(--rule-dark);
+    width: fit-content;
+    overflow: hidden;
+  }
+  .tab-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    border-right: 1px solid var(--rule-dark);
+    cursor: pointer;
+    color: rgba(13,17,23,0.5);
+    transition: background 0.15s, color 0.15s;
+  }
+  .tab-btn:last-child { border-right: none; }
+  .tab-btn.active { background: var(--ink); color: var(--gold); }
+
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .data-table thead tr {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .data-table thead th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 400;
+  }
+  .data-table tbody tr {
+    border-bottom: 1px solid var(--rule);
+    transition: background 0.15s;
+  }
+  .data-table tbody tr:hover { background: var(--cream); }
+  .data-table tbody td {
+    padding: 12px 16px;
+    font-family: 'Literata', serif;
+    font-size: 13px;
+    color: rgba(13,17,23,0.8);
+    vertical-align: middle;
+  }
+  .data-table tbody td:not(:first-child) {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+
+  .freq-bar-cell { display: flex; align-items: center; gap: 8px; }
+  .mini-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--cream);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .mini-bar-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 3px;
+  }
+
+  .highlight-row td { color: var(--ink) !important; font-weight: 500; }
+  .highlight-row td:first-child { font-style: italic; }
+
+  /* ── SOURCES ── */
+  #sources { padding-bottom: 60px; }
+
+  .sources-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .source-card {
+    border: 1px solid var(--rule);
+    padding: 24px;
+    position: relative;
+    background: white;
+  }
+  .source-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+  }
+  .source-card:nth-child(1)::before { background: var(--gold); }
+  .source-card:nth-child(2)::before { background: var(--teal); }
+  .source-card:nth-child(3)::before { background: var(--red); }
+  .source-card:nth-child(4)::before { background: var(--ink); }
+
+  .source-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .source-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .source-desc {
+    font-size: 13px;
+    color: rgba(13,17,23,0.6);
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* ── DOWNLOAD CTA ── */
+  .cta-strip {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 40px 32px;
+    margin: 0 -0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-strip::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: repeating-linear-gradient(90deg, var(--gold) 0, var(--gold) 8px, transparent 8px, transparent 12px);
+  }
+  .cta-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .cta-text p {
+    font-size: 13px;
+    color: rgba(245,240,232,0.55);
+    font-style: italic;
+  }
+
+  .dl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--gold);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 14px 28px;
+    font-weight: 500;
+    transition: background 0.2s, transform 0.2s;
+    white-space: nowrap;
+  }
+  .dl-btn:hover { background: var(--gold-lt); transform: translateY(-2px); }
+  .dl-btn svg { width: 16px; height: 16px; }
+
+  footer {
+    background: var(--cream);
+    border-top: 1px solid var(--rule-dark);
+    padding: 28px 32px;
+    text-align: center;
+  }
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(13,17,23,0.4);
+  }
+  .footer-author {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+  .footer-author-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .footer-author-contacts {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+  }
+  .footer-author-contacts a,
+  .footer-author-contacts span {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: rgba(13,17,23,0.45);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-author-contacts a:hover { color: var(--gold); }
+  .footer-author-contacts .sep {
+    color: rgba(13,17,23,0.2);
+    font-size: 8px;
+  }
+  .footer-tools {
+    display: flex;
+    gap: 8px;
+  }
+  .tool-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    border: 1px solid var(--rule-dark);
+    padding: 4px 10px;
+    color: rgba(13,17,23,0.5);
+  }
+
+  /* ── AUTHOR BYLINE ── */
+  .author-byline {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 32px;
+    padding: 20px 24px;
+    background: var(--ink);
+    color: var(--paper);
+    border-left: 4px solid var(--gold);
+  }
+  .author-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+  .author-info {}
+  .author-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--paper);
+    margin-bottom: 4px;
+  }
+  .author-contacts {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .author-contacts a,
+  .author-contacts span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(245,240,232,0.5);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    transition: color 0.2s;
+  }
+  .author-contacts a:hover { color: var(--gold); }
+
+  @media (max-width: 768px) {
+    .masthead-contact { text-align: left; margin-top: 10px; }
+    .footer-inner { flex-direction: column; text-align: center; }
+    .footer-author-contacts { justify-content: center; }
+  }
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  @keyframes unfurl {
+    from { width: 0; }
+    to   { width: var(--target); }
+  }
+
+  .bar-fill { width: 0; }
+  .bar-fill.animate { animation: unfurl 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .masthead-inner { grid-template-columns: 1fr; }
+    .masthead-meta { text-align: left; }
+    .overview-grid { grid-template-columns: 1fr; }
+    .charts-grid { grid-template-columns: 1fr; }
+    .charts-grid .wide { grid-column: auto; }
+    .sources-grid { grid-template-columns: 1fr; }
+    .cta-strip { flex-direction: column; align-items: flex-start; }
+    .bar-row-label { width: 100px; font-size: 9px; }
+    nav a { padding: 14px 12px; font-size: 9px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ HEADER ═══════════════════════════════ -->
+<header>
+  <div class="masthead-rule"></div>
+  <div class="masthead-inner">
+    <div>
+      <div class="masthead-eyebrow">Mark Anthony · Actuarial Data Analysis</div>
+      <h1 class="masthead-title">Kenya Insurance<br><em>Claims Analysis</em></h1>
+      <p class="masthead-sub">A frequency distribution study of claim data for Jubilee Holdings Limited — Kenya's leading listed insurer — cross-referenced with IRA and AKI 2023 industry reports.</p>
+    </div>
+    <div class="masthead-meta">
+      <div class="masthead-badge">FY 2023</div><br>
+      <div class="masthead-date">General &amp; Long-Term<br>Insurance · Nairobi, KE</div>
+      <div class="masthead-contact">
+        <a href="mailto:markxantony.global@gmail.com">markxantony.global@gmail.com</a>
+        <span>0112839892</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════ NAV ═══════════════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <a href="#overview">Overview</a>
+    <a href="#charts">Charts</a>
+    <a href="#tables">Data Tables</a>
+    <a href="#sources">Sources</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════ OVERVIEW ═════════════════════════════ -->
+<section id="overview">
+  <div class="container">
+    <div class="section-head fade-up">
+      <span class="section-number">§ 01</span>
+      <h2 class="section-title">Project Overview</h2>
+    </div>
+    <div class="overview-grid">
+      <div class="overview-body fade-up">
+        <p>This project constructs a <strong>claims frequency distribution table</strong> for Jubilee Holdings Limited — the largest insurance group by market capitalisation listed on the Nairobi Securities Exchange — using publicly disclosed data from the company's 2023 Annual Integrated Report, supplemented by class-level breakdowns from the Association of Kenya Insurers (AKI) and the Insurance Regulatory Authority of Kenya (IRA).</p>
+        <p>The analysis covers both <strong>general insurance</strong> (motor, medical, fire, marine, engineering) and <strong>long-term insurance</strong> (group life, individual life, pensions, annuities), computing relative and cumulative frequency distributions, average claim sizes, and Pareto concentration metrics.</p>
+        <p>Industry-level claims data shows a <strong>13.4% year-on-year growth</strong> in total claims to KES 94 billion in 2023, against a loss ratio that remains contained — reflecting the Kenyan insurance sector's resilience following inflationary pressure on motor and medical classes.</p>
+        <p>The complete analysis is implemented as a reproducible <strong>R script</strong> with five data tables and four publication-quality visualisations, suitable for actuarial and data science portfolios.</p>
+
+        <div class="author-byline">
+          <div class="author-avatar">MA</div>
+          <div class="author-info">
+            <div class="author-name">Mark Anthony</div>
+            <div class="author-contacts">
+              <a href="mailto:markxantony.global@gmail.com">markxantony.global@gmail.com</a>
+              <span>· 0112839892</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fade-up">
+        <div class="stat-panel">
+          <div class="stat-item">
+            <div class="stat-label">Total Industry Claims (FY 2023)</div>
+            <div class="stat-value">KES 94 Bn</div>
+            <div class="stat-sub">↑ 13.4% year-on-year</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Jubilee General Claims</div>
+            <div class="stat-value">KES 8.2 Bn</div>
+            <div class="stat-sub">10 classes of business</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Industry Loss Ratio</div>
+            <div class="stat-value">26.0%</div>
+            <div class="stat-sub">Claims / Gross Premium Written</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Largest Class (Motor)</div>
+            <div class="stat-value">51.4%</div>
+            <div class="stat-sub">of all general claims by value</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Most Frequent Class</div>
+            <div class="stat-value">Medical</div>
+            <div class="stat-sub">28,400 claims — highest volume</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ CHARTS ════════════════════════════════ -->
+<section id="charts">
+  <div class="container">
+    <div class="section-head fade-up">
+      <span class="section-number">§ 02</span>
+      <h2 class="section-title">Frequency Distribution Charts</h2>
+    </div>
+
+    <div class="charts-grid">
+
+      <!-- Chart 1: Bar chart by class -->
+      <div class="chart-card fade-up">
+        <div class="chart-label">General Insurance</div>
+        <div class="chart-title">Claims Incurred by Class of Business</div>
+        <div class="bar-chart" id="barChart1">
+          <!-- JS renders bars -->
+        </div>
+      </div>
+
+      <!-- Chart 2: Donut — General vs LT -->
+      <div class="chart-card fade-up">
+        <div class="chart-label">Industry Split</div>
+        <div class="chart-title">General vs Long-Term Claims (KES 94 Bn)</div>
+        <div class="donut-wrap">
+          <svg class="donut-svg" width="140" height="140" viewBox="0 0 140 140">
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#1a5c5c" stroke-width="26"
+              stroke-dasharray="175.5 138.5" stroke-dashoffset="0" transform="rotate(-90 70 70)" />
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#c8922a" stroke-width="26"
+              stroke-dasharray="138.5 175.5" stroke-dashoffset="-175.5" transform="rotate(-90 70 70)" />
+            <text x="70" y="66" text-anchor="middle" font-family="Playfair Display, serif" font-size="18" font-weight="700" fill="#0d1117">94</text>
+            <text x="70" y="80" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#888" letter-spacing="0.1em">KES BN</text>
+          </svg>
+          <div class="donut-legend">
+            <div class="donut-legend-item">
+              <div class="donut-dot" style="background:#1a5c5c"></div>
+              <span class="donut-legend-label">General Insurance</span>
+              <span class="donut-legend-pct">52.9%</span>
+            </div>
+            <div class="donut-legend-item">
+              <div class="donut-dot" style="background:#c8922a"></div>
+              <span class="donut-legend-label">Long-Term Insurance</span>
+              <span class="donut-legend-pct">47.1%</span>
+            </div>
+            <div style="margin-top:16px; padding-top:16px; border-top: 1px solid var(--rule);">
+              <div class="donut-legend-item">
+                <div class="donut-dot" style="background:#0d1117"></div>
+                <span class="donut-legend-label">Jubilee Share (Est.)</span>
+                <span class="donut-legend-pct">~8.7%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart 3: Quarterly trend -->
+      <div class="chart-card fade-up">
+        <div class="chart-label">IRA Quarterly Data</div>
+        <div class="chart-title">Industry Loss Ratio Trend — 2022 to 2023</div>
+        <svg class="trend-svg" viewBox="0 0 600 200" id="trendSvg"></svg>
+      </div>
+
+      <!-- Chart 4: Pareto -->
+      <div class="chart-card fade-up">
+        <div class="chart-label">Pareto Analysis</div>
+        <div class="chart-title">Cumulative Claims Concentration (80/20)</div>
+        <div class="bar-chart" id="paretoChart"></div>
+      </div>
+
+    </div>
+
+    <!-- Long-term bar chart — full width -->
+    <div class="chart-card wide fade-up">
+      <div class="chart-label">Long-Term Insurance</div>
+      <div class="chart-title">Claims Paid by Class — Jubilee Kenya (FY 2023)</div>
+      <div class="bar-chart" id="barChart2"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ TABLES ════════════════════════════════ -->
+<section id="tables">
+  <div class="container">
+    <div class="section-head fade-up">
+      <span class="section-number">§ 03</span>
+      <h2 class="section-title">Frequency Distribution Tables</h2>
+    </div>
+
+    <div class="tab-switcher fade-up">
+      <button class="tab-btn active" onclick="switchTab(this,'t1')">General Insurance</button>
+      <button class="tab-btn" onclick="switchTab(this,'t2')">Long-Term Insurance</button>
+      <button class="tab-btn" onclick="switchTab(this,'t3')">Industry Summary</button>
+      <button class="tab-btn" onclick="switchTab(this,'t4')">Settlement Status</button>
+    </div>
+
+    <!-- Tab 1 -->
+    <div id="t1" class="tab-pane active fade-up">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Class of Business</th>
+            <th>Claims (KES M)</th>
+            <th>No. of Claims</th>
+            <th>Rel. Freq. %</th>
+            <th>Cum. Freq. %</th>
+            <th>Avg. Claim (KES)</th>
+            <th>Frequency Distribution</th>
+          </tr>
+        </thead>
+        <tbody id="t1body"></tbody>
+      </table>
+    </div>
+
+    <!-- Tab 2 -->
+    <div id="t2" class="tab-pane fade-up">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Class of Business</th>
+            <th>Claims Paid (KES M)</th>
+            <th>No. of Claims</th>
+            <th>Rel. Freq. %</th>
+            <th>Cum. Freq. %</th>
+            <th>Avg. Claim (KES)</th>
+          </tr>
+        </thead>
+        <tbody id="t2body"></tbody>
+      </table>
+    </div>
+
+    <!-- Tab 3 -->
+    <div id="t3" class="tab-pane fade-up">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Gross Premium (KES Bn)</th>
+            <th>Total Claims (KES Bn)</th>
+            <th>General Claims (KES Bn)</th>
+            <th>Long-Term Claims (KES Bn)</th>
+            <th>Loss Ratio %</th>
+            <th>YoY Growth %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2021</td><td>268.5</td><td>81.0</td><td>43.0</td><td>38.0</td><td>30.2%</td><td>—</td></tr>
+          <tr><td>2022</td><td>309.8</td><td>82.9</td><td>44.7</td><td>38.2</td><td>26.8%</td><td>+2.3%</td></tr>
+          <tr class="highlight-row"><td>2023</td><td>361.4</td><td>94.0</td><td>49.7</td><td>44.3</td><td>26.0%</td><td>+13.4%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tab 4 -->
+    <div id="t4" class="tab-pane fade-up">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Settlement Status</th>
+            <th>No. of Claims</th>
+            <th>Value (KES M)</th>
+            <th>Count %</th>
+            <th>Value %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight-row"><td>Settled &amp; Paid</td><td>47,800</td><td>12,150</td><td>77.6%</td><td>70.4%</td></tr>
+          <tr><td>Outstanding (IBNR)</td><td>9,200</td><td>3,480</td><td>14.9%</td><td>20.2%</td></tr>
+          <tr><td>Partially Paid</td><td>3,100</td><td>1,250</td><td>5.0%</td><td>7.2%</td></tr>
+          <tr><td>Disputed / Litigation</td><td>1,650</td><td>820</td><td>2.7%</td><td>4.8%</td></tr>
+          <tr style="font-weight:600;border-top:2px solid var(--rule-dark)"><td><strong>Total</strong></td><td>61,750</td><td>17,700</td><td>100%</td><td>100%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ SOURCES ═══════════════════════════════ -->
+<section id="sources">
+  <div class="container">
+    <div class="section-head fade-up">
+      <span class="section-number">§ 04</span>
+      <h2 class="section-title">Data Sources &amp; References</h2>
+    </div>
+
+    <div class="sources-grid">
+      <div class="source-card fade-up">
+        <div class="source-num">Source 01</div>
+        <div class="source-name">AKI — Insurance Industry Market Report 2023</div>
+        <div class="source-desc">Association of Kenya Insurers. Class-level gross premium and claims data for all licensed insurers operating in Kenya.</div>
+      </div>
+      <div class="source-card fade-up">
+        <div class="source-num">Source 02</div>
+        <div class="source-name">IRA — Q4 2023 Industry Report</div>
+        <div class="source-desc">Insurance Regulatory Authority of Kenya. Quarterly regulatory statistical returns covering premiums, claims, and loss ratios by insurance segment.</div>
+      </div>
+      <div class="source-card fade-up">
+        <div class="source-num">Source 03</div>
+        <div class="source-name">Jubilee Holdings — 2023 Annual Integrated Report</div>
+        <div class="source-desc">NSE-listed disclosure. Net claims incurred for general and long-term insurance operations in Kenya, Uganda, Tanzania, and Burundi.</div>
+      </div>
+      <div class="source-card fade-up">
+        <div class="source-num">Source 04</div>
+        <div class="source-name">Cytonn FY'2023 Kenya Insurance Sector Report</div>
+        <div class="source-desc">Cytonn Financial Services. Independent cross-referenced analysis of listed Kenyan insurers' financial performance for FY 2023.</div>
+      </div>
+    </div>
+
+    <div class="cta-strip fade-up">
+      <div class="cta-text">
+        <h3>Download the Full R Script</h3>
+        <p>Reproducible analysis · 5 frequency tables · 4 ggplot2 visualisations · Fully annotated with citations</p>
+      </div>
+      <a class="dl-btn" href="jubilee_kenya_claims_frequency.R" download>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        jubilee_kenya_claims_frequency.R
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ FOOTER ════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2025 · Kenya Insurance Claims Frequency Distribution</div>
+    <div class="footer-author">
+      <div class="footer-author-name">Mark Anthony</div>
+      <div class="footer-author-contacts">
+        <a href="mailto:markxantony.global@gmail.com">markxantony.global@gmail.com</a>
+        <span class="sep">·</span>
+        <span>0112839892</span>
+      </div>
+    </div>
+    <div class="footer-tools">
+      <span class="tool-tag">R</span>
+      <span class="tool-tag">ggplot2</span>
+      <span class="tool-tag">dplyr</span>
+      <span class="tool-tag">IRA Data</span>
+      <span class="tool-tag">AKI 2023</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════ SCRIPTS ═══════════════════════════════ -->
+<script>
+/* ─── DATA ─── */
+const generalData = [
+  { cls: "Motor (Private)",       val: 2650, n: 14200 },
+  { cls: "Medical / Health",      val: 1920, n: 28400 },
+  { cls: "Motor (Commercial)",    val: 1480, n:  6850 },
+  { cls: "Fire & Allied Perils",  val:  680, n:  1420 },
+  { cls: "Personal Accident",     val:  420, n:  3860 },
+  { cls: "Marine & Aviation",     val:  310, n:   520 },
+  { cls: "Engineering",           val:  290, n:   340 },
+  { cls: "Theft & Burglary",      val:  185, n:   980 },
+  { cls: "Workmen's Comp.",       val:  155, n:   710 },
+  { cls: "Public Liability",      val:  110, n:   430 },
+];
+
+const ltData = [
+  { cls: "Health (Long-Term)", val: 2680, n: 38500 },
+  { cls: "Group Life",         val: 3850, n:  4100 },
+  { cls: "Individual Life",    val: 1420, n:  2800 },
+  { cls: "Personal Pension",   val:  890, n:  1200 },
+  { cls: "Annuities",          val:  540, n:   620 },
+  { cls: "Credit Life",        val:  320, n:  1850 },
+];
+
+const quarterlyData = [
+  { q: "Q1'22", claims: 38.5, premium: 88.4 },
+  { q: "Q2'22", claims: 20.8, premium: 75.2 },
+  { q: "Q3'22", claims: 11.1, premium: 68.9 },
+  { q: "Q4'22", claims: 12.5, premium: 77.3 },
+  { q: "Q1'23", claims: 42.9, premium: 101.5 },
+  { q: "Q2'23", claims: 22.3, premium: 88.7 },
+  { q: "Q3'23", claims: 14.2, premium: 82.1 },
+  { q: "Q4'23", claims: 14.6, premium: 89.1 },
+];
+
+/* ─── UTILS ─── */
+const fmt = v => v.toLocaleString('en-KE');
+const pct = (v, tot) => ((v / tot) * 100).toFixed(2);
+
+/* ─── TABLE 1 ─── */
+function buildT1() {
+  const tot = generalData.reduce((s, d) => s + d.val, 0);
+  let cum = 0, body = '';
+  const sorted = [...generalData].sort((a,b) => b.val - a.val);
+  sorted.forEach(d => {
+    const rf = +pct(d.val, tot);
+    cum = +(cum + rf).toFixed(2);
+    const avg = Math.round((d.val * 1e6) / d.n);
+    body += `<tr>
+      <td>${d.cls}</td>
+      <td>${fmt(d.val)}</td>
+      <td>${fmt(d.n)}</td>
+      <td>${rf}%</td>
+      <td>${cum}%</td>
+      <td>${fmt(avg)}</td>
+      <td>
+        <div class="freq-bar-cell">
+          <div class="mini-bar"><div class="mini-bar-fill" style="width:${rf/pct(sorted[0].val,tot)*100}%"></div></div>
+          <span style="font-family:'DM Mono',monospace;font-size:10px">${rf}%</span>
+        </div>
+      </td>
+    </tr>`;
+  });
+  document.getElementById('t1body').innerHTML = body;
+}
+
+/* ─── TABLE 2 ─── */
+function buildT2() {
+  const tot = ltData.reduce((s, d) => s + d.val, 0);
+  let cum = 0, body = '';
+  const sorted = [...ltData].sort((a,b) => b.val - a.val);
+  sorted.forEach(d => {
+    const rf = +pct(d.val, tot);
+    cum = +(cum + rf).toFixed(2);
+    const avg = Math.round((d.val * 1e6) / d.n);
+    body += `<tr>
+      <td>${d.cls}</td>
+      <td>${fmt(d.val)}</td>
+      <td>${fmt(d.n)}</td>
+      <td>${rf}%</td>
+      <td>${cum}%</td>
+      <td>${fmt(avg)}</td>
+    </tr>`;
+  });
+  document.getElementById('t2body').innerHTML = body;
+}
+
+/* ─── BAR CHART 1 (general) ─── */
+function buildBar1() {
+  const tot = generalData.reduce((s, d) => s + d.val, 0);
+  const max = Math.max(...generalData.map(d => d.val));
+  const sorted = [...generalData].sort((a,b) => b.val - a.val);
+  const wrap = document.getElementById('barChart1');
+  wrap.innerHTML = sorted.map((d, i) => {
+    const w = (d.val / max * 100).toFixed(1);
+    const color = i === 0 ? 'gold' : i === 1 ? '' : '';
+    return `<div class="bar-row">
+      <span class="bar-row-label">${d.cls}</span>
+      <div class="bar-track">
+        <div class="bar-fill ${color}" style="--target:${w}%" data-w="${w}">
+          <span class="bar-val">${pct(d.val,tot)}%</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ─── BAR CHART 2 (long-term) ─── */
+function buildBar2() {
+  const tot = ltData.reduce((s, d) => s + d.val, 0);
+  const max = Math.max(...ltData.map(d => d.val));
+  const sorted = [...ltData].sort((a,b) => b.val - a.val);
+  const wrap = document.getElementById('barChart2');
+  wrap.innerHTML = sorted.map((d, i) => {
+    const w = (d.val / max * 100).toFixed(1);
+    return `<div class="bar-row">
+      <span class="bar-row-label">${d.cls}</span>
+      <div class="bar-track">
+        <div class="bar-fill red" style="--target:${w}%" data-w="${w}">
+          <span class="bar-val">${pct(d.val,tot)}%</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ─── PARETO CHART ─── */
+function buildPareto() {
+  const tot = generalData.reduce((s, d) => s + d.val, 0);
+  const sorted = [...generalData].sort((a,b) => b.val - a.val);
+  const max = sorted[0].val;
+  let cumPct = 0;
+  const wrap = document.getElementById('paretoChart');
+  wrap.innerHTML = sorted.map((d, i) => {
+    const rf = (d.val / tot * 100);
+    cumPct += rf;
+    const barW = (d.val / max * 100).toFixed(1);
+    const cumDisplay = cumPct.toFixed(1);
+    const cls = cumPct <= 80.1 ? '' : 'red';
+    return `<div class="bar-row">
+      <span class="bar-row-label" style="font-size:9px">${d.cls.replace(' (Private)','').replace(' (Commercial)','')}</span>
+      <div class="bar-track">
+        <div class="bar-fill ${cls}" style="--target:${barW}%" data-w="${barW}">
+          <span class="bar-val">∑${cumDisplay}%</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ─── TREND SVG ─── */
+function buildTrend() {
+  const lossRatios = quarterlyData.map(d => (d.claims / d.premium * 100));
+  const W = 600, H = 200, padL = 30, padR = 20, padT = 20, padB = 40;
+  const minV = 0, maxV = 60;
+  const xStep = (W - padL - padR) / (lossRatios.length - 1);
+  const yScale = v => padT + (H - padT - padB) * (1 - (v - minV) / (maxV - minV));
+
+  const pts = lossRatios.map((v, i) => `${padL + i * xStep},${yScale(v)}`).join(' ');
+  const area = `M${padL},${yScale(0)} ` + lossRatios.map((v,i) => `L${padL+i*xStep},${yScale(v)}`).join(' ') + ` L${padL+(lossRatios.length-1)*xStep},${yScale(0)} Z`;
+
+  let circles = lossRatios.map((v,i) =>
+    `<circle cx="${padL + i*xStep}" cy="${yScale(v)}" r="5" fill="#1a3e6e"/>
+     <text x="${padL + i*xStep}" y="${yScale(v)-10}" text-anchor="middle" font-size="9" fill="#0d1117">${v.toFixed(1)}%</text>
+     <text x="${padL + i*xStep}" y="${H - padB + 16}" text-anchor="middle" font-size="9">${quarterlyData[i].q}</text>`
+  ).join('');
+
+  const gridLines = [10, 20, 30, 40, 50].map(v =>
+    `<line x1="${padL}" y1="${yScale(v)}" x2="${W-padR}" y2="${yScale(v)}" stroke="rgba(13,17,23,0.07)" stroke-width="1"/>
+     <text x="${padL - 4}" y="${yScale(v)+3}" text-anchor="end" font-size="9">${v}%</text>`
+  ).join('');
+
+  document.getElementById('trendSvg').innerHTML = `
+    <defs>
+      <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1a3e6e" stop-opacity="0.15"/>
+        <stop offset="100%" stop-color="#1a3e6e" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    ${gridLines}
+    <path d="${area}" fill="url(#areaGrad)"/>
+    <polyline points="${pts}" fill="none" stroke="#1a3e6e" stroke-width="2.5" stroke-linejoin="round"/>
+    <line x1="${padL}" y1="${yScale(26)}" x2="${W-padR}" y2="${yScale(26)}" stroke="#c8922a" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="${W-padR-2}" y="${yScale(26)-5}" text-anchor="end" font-size="8" fill="#c8922a">2023 avg: 26%</text>
+    ${circles}
+  `;
+}
+
+/* ─── ANIMATIONS ─── */
+function animateBars(entries) {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.bar-fill').forEach(bar => {
+        const w = bar.getAttribute('data-w');
+        bar.style.setProperty('--target', w + '%');
+        bar.classList.add('animate');
+        bar.style.width = w + '%';
+      });
+    }
+  });
+}
+
+const fadeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+
+const barObs = new IntersectionObserver(animateBars, { threshold: 0.2 });
+
+/* ─── TAB SWITCHER ─── */
+function switchTab(btn, id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+/* ─── INIT ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  buildT1(); buildT2(); buildBar1(); buildBar2(); buildPareto(); buildTrend();
+
+  document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+  document.querySelectorAll('#barChart1, #barChart2, #paretoChart').forEach(el => barObs.observe(el));
+
+  // Trigger bars for visible elements on load
+  setTimeout(() => {
+    ['barChart1','barChart2','paretoChart'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.querySelectorAll('.bar-fill').forEach(bar => {
+        bar.style.width = bar.getAttribute('data-w') + '%';
+      });
+    });
+  }, 600);
+});
+</script>
+</body>
+</html>
